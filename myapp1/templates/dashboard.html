@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+  <ul class="nav nav-tabs" role="tablist" style="right: auto;">
+    <li><a href="{{url_for('user')}}" data-toggle="tooltip" title="User Related">Profile</a></li>
+    <li><a href="{{url_for('user')}}" data-toggle="tooltip" title="Logout from your Account">logout</a></li>
+          
+  </ul>
+</div>
+
+
+<div class="container">
+  
+  <div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" id="menu1" type="button" data-toggle="dropdown">Menu
+    <span class="caret"></span></button>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="{{url_for('user')}}" data-toggle="tooltip" title="User Related">User setting</a></li>
+      <li role="presentation" class="divider"></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="{{url_for('user')}}" data-toggle="tooltip" title="Device Related">Device Setting</a></li>
+      <li role="presentation" class="divider"></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="{{url_for('user')}}" data-toggle="tooltip" title="Device Related">Tshoot</a></li>
+      <li role="presentation" class="divider"></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="{{url_for('user')}}" data-toggle="tooltip" title="Device configuration Related">Config</a></li>
+      <li role="presentation" class="divider"></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="{{url_for('user')}}" data-toggle="tooltip" title="Script Related Configuration">Script</a></li>    
+    </ul>
+  </div>
+</div>
+
+<script>
+$(document).ready(function(){
+  $(".dropdown-toggle").dropdown("toggle");
+});
+</script>
+
+</body>
+</html>

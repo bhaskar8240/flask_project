@@ -1,0 +1,27 @@
+body {
+    background-color:whitesmoke;
+}
+
+
+h1 {
+    color: black;
+    text-align: center;
+    text-size-adjust: center ;
+    font-size: 20px;
+    ;
+    
+}
+  
+body {
+    background-color:floralwhite;
+}
+
+span.b{
+    display: inline-block;
+    width: 100px;
+    height: 100px;
+    padding: 5px;
+    border: 1px solid blue;    
+    background-color:orange; 
+
+}

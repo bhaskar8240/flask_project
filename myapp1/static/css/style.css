@@ -1,0 +1,28 @@
+body{
+    
+    animation: change1 15s ease-in-out infinite;
+    background-size: cover;
+}
+
+@keyframes change1 {
+    0%{background-image:url(1.jpeg);}
+    25%{background-image:url(2.jpg);}
+    50%{background-image:url(3.jpg);}
+    75%{background-image:url(4.jpg);}
+    100%{background-image:url(5.jpg);}
+    
+} 
+
+  
+h1 {
+    color: black;
+    text-align: center;
+    text-size-adjust: center ;
+}
+  
+p {
+    font-family: verdana;
+    color:black;
+    font-size: 20px;
+}
+

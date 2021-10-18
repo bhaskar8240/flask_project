@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>User</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+<title>Login</title>
+</head>
+<div class="container">        
+    <ul class="nav nav-tabs" role="tablist"class="text-right">
+      <li><a href="{{url_for('dashboard')}}" data-toggle="tooltip" title="Back to home ">Home</a></li>
+      <li><a href="{{url_for('login')}}" data-toggle="tooltip" title="Logout">logout</a></li>
+      
+    </ul>
+  </div>
+<body>      
+<span class="b">
+<a href="{{url_for('register')}}">Add user</a><br>
+<a href="{{url_for('user')}}">Edit user</a><br>
+</span>
+    {%for all in data%}
+    <div>
+    {{data.username}}
+    </div>    
+    {%endfor%}
+</form>   
+</body>
+</html>
