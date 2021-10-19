@@ -6,7 +6,6 @@ from flask_login import UserMixin,LoginManager,login_required,login_user,logout_
 from wtforms import StringField, PasswordField ,SubmitField
 from wtforms.validators import InputRequired,Length , ValidationError
 from datetime import timedelta
-import pandas as pd
 from datetime import datetime
 
 app = Flask(__name__)
@@ -40,18 +39,19 @@ def before_request():
 #database table creation 
 class User(db.Model,UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True, nullable=False)
-    password = db.Column(db.String(80),nullable=False)
+    username = db.Column(db.String(10), unique=True, nullable=False)
+    password = db.Column(db.String(30),nullable=False)
+    email = db.Column(db.String(20),nullable=False)
     
 
-class Device(db.Model):
+class Device(db.Model,UserMixin):
     id = db.Column(db.Integer, primary_key=True)
-    device_name = db.Column(db.String(20),unique=True,nullable=False)
+    device_name = db.Column(db.String(20),nullable=False)
     device_ip = db.Column(db.Integer,unique=True,nullable=False)
-    device_vendor = db.Column(db.String(20),unique=True,nullable=False)
-    device_ = db.Column(db.String(20),unique=True,nullable=False)
-    username = db.Column(db.String(20), unique=True, nullable=False)
+    device_vendor = db.Column(db.String(20),nullable=False)
+    username = db.Column(db.String(20), nullable=False)
     password = db.Column(db.String(80),nullable=False)
+    comment = db.Column(db.String(1000))
     
 
 #Login form Creation     
@@ -59,7 +59,8 @@ class loginform(FlaskForm):
     username = StringField(validators=[InputRequired(),Length(
         min=4,max=20)],render_kw={"Placeholder":"Username"})
     password = PasswordField(validators=[InputRequired(),Length(
-        min=4,max=20)],render_kw={"Placeholder":"Password"}) 
+        min=4,max=20)],render_kw={"Placeholder":"Password"})
+
     submit = SubmitField("Login")   
 
 #Newuser form creation 
@@ -68,7 +69,37 @@ class registerform(FlaskForm):
         min=4,max=20)],render_kw={"Placeholder":"Username"})
     password = PasswordField(validators=[InputRequired(),Length(
         min=4,max=20)],render_kw={"Placeholder":"Password"}) 
-    submit = SubmitField("Register")     
+    email = StringField(validators=[InputRequired(),Length(
+        min=4,max=20)],render_kw={"Placeholder":"Email"})
+
+    submit = SubmitField("Register")  
+
+
+class editform(FlaskForm):
+    username = StringField(validators=[InputRequired(),Length(
+        min=4,max=20)],render_kw={"Placeholder":"Username"})
+    password = PasswordField(validators=[InputRequired(),Length(
+        min=4,max=20)],render_kw={"Placeholder":"Password"}) 
+
+    submit = SubmitField("Submit") 
+
+
+class deviceform(FlaskForm):
+    device_name = StringField(validators=[InputRequired(),Length(
+        min=4,max=20)],render_kw={"Placeholder":"Device_name"})
+    device_ip =StringField(validators=[InputRequired(),Length(
+        min=4,max=20)],render_kw={"Placeholder":"Device_ip"})
+    device_vendor =StringField(validators=[InputRequired(),Length(
+        min=4,max=20)],render_kw={"Placeholder":"Device_vendor"})
+    username = StringField(validators=[InputRequired(),Length(
+        min=4,max=20)],render_kw={"Placeholder":"Username"}) 
+    password = PasswordField(validators=[InputRequired(),Length(
+        min=4,max=20)],render_kw={"Placeholder":"Password"})
+    comment = StringField(validators=[InputRequired(),Length(
+        min=4,max=20)],render_kw={"Placeholder":"Comment/Location"})     
+
+    submit = SubmitField("Submit")
+
 
 #Root /Home page 
 @app.route("/")
@@ -93,7 +124,7 @@ def login():
 def register():
     form = registerform()
     if form.validate_on_submit():
-        new_user = User(username=form.username.data ,password = form.password.data)
+        new_user = User(username=form.username.data ,password = form.password.data ,email= form.email.data)
         db.session.add(new_user)
         db.session.commit()
         return redirect (url_for("user")) 
@@ -109,14 +140,34 @@ def logout():
 @app.route("/dashboard",methods= ['GET','POST'])
 @login_required
 def dashboard():
-    return render_template ("dashboard.html")
+    form = loginform()
+    return render_template ("dashboard.html" )
 
+@app.route("/device_setting",methods=['GET','POST'])
+@login_required
+def device_setting():
+    form = deviceform()
+    if form.validate_on_submit():
+        device = Device(device_name= form.device_name.data,device_ip=form.device_ip.data,
+        device_vendor= form.device_vendor.data,username=form.username.data,
+        password = form.password.data, comment=form.comment.data)
+        db.session.add(device)
+        db.session.commit()
+        return redirect (url_for("device"))
+    return render_template ("device_setting.html",form = form)
 #Sub dashboard user setting page 
 @app.route("/user",methods= ['GET','POST'])
 @login_required
 def user():
-    data = pd.read_sql_table('user', 'sqlite:///bhaskar.db')
-    return render_template ("user.html",data = data )    
+    Users = User.query.all() 
+    return render_template('user.html',tasks = Users)
+
+#Sub dashboard device setting page 
+@app.route("/device",methods= ['GET','POST'])
+@login_required
+def device():
+    device = Device.query.all() 
+    return render_template('device.html',device = device)       
 
 #Script related page (Work in progress)
 @app.route("/scrip")
@@ -129,9 +180,29 @@ def contact():
     return render_template ("contact.html")
 
 #Contact  related page (Work in progress)
-@app.route("/about")
+@app.route("/about",methods= ['GET','POST'])
 def about():
-    return render_template ("about.html")              
+    return render_template ("about.html")
+@app.route("/change")
+def change():
+    form = editform()
+    if form.validate_on_submit():
+        edit_user = User(password = form.password.data  )
+        db.session.add(edit_user)
+        db.session.commit()
+    return render_template ("change.html" ,form = form)
+
+@app.route("/user_delete/<id>")
+def user_delete(id):
+    User.query.filter_by(id=int(id)).delete()
+    db.session.commit()
+    return redirect(url_for('user'))
+@app.route("/device_delete/<id>")
+def device_delete(id):
+    Device.query.filter_by(id=int(id)).delete()
+    db.session.commit()
+    return redirect(url_for('device'))    
+
 
 #Application run and debug related work 
 if __name__ == "__main__":

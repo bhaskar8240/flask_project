@@ -7,21 +7,26 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-<title>Login</title>
+
 <link rel="stylesheet" href="static/css/style1.css">
 </head>
 <div class="container"style="text-align:center">
-  <h1>New_User</h1>
-  <form method="POST" action="">
+  <h1>Add New device</h1>
+  <form method="POST" action="/device_setting">
     {{form.hidden_tag()}}
-    {{form.username}}<br>
     <br>
-    {{form.password}}<br>
+    {{form.device_name}}
     <br>
-    {{form.email}}<br>
+    {{form.device_ip}}
+    <br>
+    {{form.device_vendor}}
+    <br>
+    {{form.username}}{{form.password}}
+    <br>
+    {{form.comment}}
     <br>
     {{form.submit}}
-    <p>Cancel ?<a href="{{url_for('user')}}">Click</a>.</p>
+    <p>Cancel ?<a href="{{url_for('device')}}">Click</a>.</p>
   </form>
   <style>
     body {
